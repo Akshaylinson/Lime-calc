@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LimeCalc - Advanced Scientific Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <style src="style.css"></style>
+</head>
+<body class="font-sans bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark transition-colors duration-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-primary-dark dark:text-primary-light">LimeCalc</h1>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Advanced Scientific Calculator with Secure Storage</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block"></i>
+                </button>
+                <button id="settingsBtn" class="flex items-center gap-2 px-4 py-2 bg-primary-light/20 dark:bg-primary-dark/20 text-primary-dark dark:text-primary-light rounded-lg hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 transition-colors">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Calculator -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Calculator Panel -->
+            <div class="lg:col-span-2 bg-surface-light dark:bg-surface-dark rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors">
+                <!-- Display Area -->
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div id="history" class="text-sm text-text-secondary-light dark:text-text-secondary-dark h-6 overflow-hidden whitespace-nowrap text-ellipsis"></div>
+                    <div id="display" class="text-4xl font-mono font-medium text-right py-2 overflow-x-auto scrollbar-thin">0</div>
+                </div>
+                
+                <!-- Button Grid -->
+                <div class="p-4">
+                    <!-- Standard Buttons -->
+                    <div class="grid grid-cols-5 gap-3 mb-3">
+                        <button onclick="clearDisplay()" class="col-span-1 bg-danger-light/20 text-danger-dark dark:bg-danger-dark/20 dark:text-danger-light hover:bg-danger-light/30 dark:hover:bg-danger-dark/30 rounded-lg p-3 font-medium transition-colors">C</button>
+                        <button onclick="memoryRecall()" class="col-span-1 bg-secondary-light/20 text-secondary-dark dark:bg-secondary-dark/20 dark:text-secondary-light hover:bg-secondary-light/30 dark:hover:bg-secondary-dark/30 rounded-lg p-3 font-medium transition-colors">MR</button>
+                        <button onclick="memoryClear()" class="col-span-1 bg-secondary-light/20 text-secondary-dark dark:bg-secondary-dark/20 dark:text-secondary-light hover:bg-secondary-light/30 dark:hover:bg-secondary-dark/30 rounded-lg p-3 font-medium transition-colors">MC</button>
+                        <button onclick="memoryAdd()" class="col-span-1 bg-secondary-light/20 text-secondary-dark dark:bg-secondary-dark/20 dark:text-secondary-light hover:bg-secondary-light/30 dark:hover:bg-secondary-dark/30 rounded-lg p-3 font-medium transition-colors">M+</button>
+                        <button onclick="memorySubtract()" class="col-span-1 bg-secondary-light/20 text-secondary-dark dark:bg-secondary-dark/20 dark:text-secondary-light hover:bg-secondary-light/30 dark:hover:bg-secondary-dark/30 rounded-lg p-3 font-medium transition-colors">M-</button>
+                        
+                        <button onclick="appendToDisplay('(')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">(</button>
+                        <button onclick="appendToDisplay(')')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">)</button>
+                        <button onclick="appendToDisplay('%')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">%</button>
+                        <button onclick="appendToDisplay('^')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">^</button>
+                        <button onclick="appendToDisplay('sqrt(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">√</button>
+                        
+                        <button onclick="appendToDisplay('7')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">7</button>
+                        <button onclick="appendToDisplay('8')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">8</button>
+                        <button onclick="appendToDisplay('9')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">9</button>
+                        <button onclick="appendToDisplay('/')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">/</button>
+                        <button onclick="appendToDisplay('sin(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">sin</button>
+                        
+                        <button onclick="appendToDisplay('4')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">4</button>
+                        <button onclick="appendToDisplay('5')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">5</button>
+                        <button onclick="appendToDisplay('6')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">6</button>
+                        <button onclick="appendToDisplay('*')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">×</button>
+                        <button onclick="appendToDisplay('cos(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">cos</button>
+                        
+                        <button onclick="appendToDisplay('1')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">1</button>
+                        <button onclick="appendToDisplay('2')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">2</button>
+                        <button onclick="appendToDisplay('3')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">3</button>
+                        <button onclick="appendToDisplay('-')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">-</button>
+                        <button onclick="appendToDisplay('tan(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">tan</button>
+                        
+                        <button onclick="appendToDisplay('0')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">0</button>
+                        <button onclick="appendToDisplay('.')" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">.</button>
+                        <button onclick="backspace()" class="col-span-1 bg-danger-light/20 text-danger-dark dark:bg-danger-dark/20 dark:text-danger-light hover:bg-danger-light/30 dark:hover:bg-danger-dark/30 rounded-lg p-3 font-medium transition-colors">
+                            <i class="fas fa-delete-left"></i>
+                        </button>
+                        <button onclick="appendToDisplay('+')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">+</button>
+                        <button onclick="appendToDisplay('log(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">log</button>
+                        
+                        <button onclick="calculate()" class="col-span-2 bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg p-3 font-medium transition-colors">=</button>
+                        <button onclick="appendToDisplay('pi')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">π</button>
+                        <button onclick="appendToDisplay('e')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">e</button>
+                        <button onclick="toggleScientific()" class="col-span-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-3 font-medium transition-colors">Sci</button>
+                    </div>
+                    
+                    <!-- Scientific Buttons (Hidden by default) -->
+                    <div id="scientificButtons" class="grid grid-cols-5 gap-3 hidden">
+                        <button onclick="appendToDisplay('asin(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">sin⁻¹</button>
+                        <button onclick="appendToDisplay('acos(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">cos⁻¹</button>
+                        <button onclick="appendToDisplay('atan(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">tan⁻¹</button>
+                        <button onclick="appendToDisplay('ln(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">ln</button>
+                        <button onclick="appendToDisplay('factorial(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">n!</button>
+                        
+                        <button onclick="appendToDisplay('abs(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">|x|</button>
+                        <button onclick="appendToDisplay('exp(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">exp</button>
+                        <button onclick="appendToDisplay('floor(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">floor</button>
+                        <button onclick="appendToDisplay('ceil(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">ceil</button>
+                        <button onclick="appendToDisplay('round(')" class="col-span-1 bg-accent-light/20 text-accent-dark dark:bg-accent-dark/20 dark:text-accent-light hover:bg-accent-light/30 dark:hover:bg-accent-dark/30 rounded-lg p-3 font-medium transition-colors">round</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Private Space Panel -->
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-semibold flex items-center gap-2">
+                        <i class="fas fa-lock"></i>
+                        <span>Private Space</span>
+                    </h2>
+                </div>
+                
+                <div class="p-4">
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">
+                        Securely store files, photos, and videos with passcode protection.
+                    </p>
+                    
+                    <button onclick="openPrivateSpace()" class="w-full bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg p-3 font-medium transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Open Private Space</span>
+                    </button>
+                    
+                    <div class="mt-6">
+                        <h3 class="font-medium mb-2 flex items-center gap-2">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Storage Usage</span>
+                        </h3>
+                        <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5 mb-2">
+                            <div id="storageProgress" class="bg-primary-light dark:bg-primary-dark h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="storageInfo" class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Calculating storage...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeSettingsModal()"></div>
+        
+        <div class="relative bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-scale-in">
+            <button onclick="closeSettingsModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </h2>
+                
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+                    <button data-tab="appearance" class="tab-button px-4 py-2 font-medium border-b-2 border-transparent hover:text-primary-dark dark:hover:text-primary-light transition-colors active">Appearance</button>
+                    <button data-tab="private" class="tab-button px-4 py-2 font-medium border-b-2 border-transparent hover:text-primary-dark dark:hover:text-primary-light transition-colors">Private Space</button>
+                    <button data-tab="storage" class="tab-button px-4 py-2 font-medium border-b-2 border-transparent hover:text-primary-dark dark:hover:text-primary-light transition-colors">Storage</button>
+                </div>
+                
+                <!-- Tab Contents -->
+                <div id="appearanceTab" class="tab-content space-y-4">
+                    <div>
+                        <label for="themeSelect" class="block text-sm font-medium mb-2">Theme</label>
+                        <select id="themeSelect" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent transition-colors">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System Default</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="fontSizeSelect" class="block text-sm font-medium mb-2">Font Size</label>
+                        <select id="fontSizeSelect" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent transition-colors">
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="buttonLayoutSelect" class="block text-sm font-medium mb-2">Button Layout</label>
+                        <select id="buttonLayoutSelect" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent transition-colors">
+                            <option value="compact">Compact</option>
+                            <option value="spacious">Spacious</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="privateTab" class="tab-content space-y-4 hidden">
+                    <div>
+                        <label for="passcodeInput" class="block text-sm font-medium mb-2">Set Passcode</label>
+                        <div class="flex gap-2">
+                            <input type="password" id="passcodeInput" placeholder="Enter new passcode" class="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent transition-colors">
+                            <button onclick="setPasscode()" class="bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg px-4 py-2 font-medium transition-colors">Save</button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium mb-2">Security Options</label>
+                        
+                        <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <input type="checkbox" id="enableBiometric" class="w-4 h-4 text-primary-light dark:text-primary-dark rounded focus:ring-primary-light dark:focus:ring-primary-dark border-gray-300 dark:border-gray-600">
+                            <label for="enableBiometric" class="text-sm">Enable Biometric Authentication</label>
+                        </div>
+                        
+                        <div class="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <label for="autoLockSelect" class="block text-sm mb-2">Auto Lock</label>
+                            <select id="autoLockSelect" class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent transition-colors">
+                                <option value="0">Immediately</option>
+                                <option value="1">After 1 minute</option>
+                                <option value="5">After 5 minutes</option>
+                                <option value="30">After 30 minutes</option>
+                                <option value="-1" selected>Never</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="storageTab" class="tab-content space-y-4 hidden">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Storage Usage</label>
+                        <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5 mb-2">
+                            <div id="modalStorageProgress" class="bg-primary-light dark:bg-primary-dark h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="modalStorageInfo" class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Calculating storage...</p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium mb-2">Storage Options</label>
+                        
+                        <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <input type="checkbox" id="enableCompression" class="w-4 h-4 text-primary-light dark:text-primary-dark rounded focus:ring-primary-light dark:focus:ring-primary-dark border-gray-300 dark:border-gray-600" checked>
+                            <label for="enableCompression" class="text-sm">Enable Image Compression</label>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <input type="checkbox" id="useIndexedDB" class="w-4 h-4 text-primary-light dark:text-primary-dark rounded focus:ring-primary-light dark:focus:ring-primary-dark border-gray-300 dark:border-gray-600" checked>
+                            <label for="useIndexedDB" class="text-sm">Use Advanced Storage (IndexedDB)</label>
+                        </div>
+                    </div>
+                    
+                    <button onclick="clearAllPrivateData()" class="w-full mt-4 bg-danger-light/20 text-danger-dark dark:bg-danger-dark/20 dark:text-danger-light hover:bg-danger-light/30 dark:hover:bg-danger-dark/30 rounded-lg p-3 font-medium transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-trash"></i>
+                        <span>Clear All Private Data</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Private Space Modal -->
+    <div id="privateSpaceModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closePrivateSpaceModal()"></div>
+        
+        <div class="relative bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden animate-scale-in">
+            <button onclick="closePrivateSpaceModal()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Passcode Screen -->
+            <div id="passcodeScreen" class="p-8 flex flex-col items-center justify-center h-full">
+                <div class="bg-primary-light/10 dark:bg-primary-dark/10 p-6 rounded-full mb-6">
+                    <i class="fas fa-lock text-3xl text-primary-light dark:text-primary-dark"></i>
+                </div>
+                
+                <h2 class="text-2xl font-bold mb-2">Private Space Locked</h2>
+                <p class="text-text-secondary-light dark:text-text-secondary-dark mb-6">Enter your passcode to continue</p>
+                
+                <div class="w-full max-w-xs space-y-4">
+                    <input type="password" id="enterPasscode" placeholder="Enter passcode" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-transparent transition-colors">
+                    <button onclick="verifyPasscode()" class="w-full bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg p-3 font-medium transition-colors">
+                        Unlock
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Private Content -->
+            <div id="privateContent" class="h-full flex flex-col hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-semibold flex items-center gap-2">
+                        <i class="fas fa-lock-open"></i>
+                        <span>Private Space</span>
+                    </h2>
+                </div>
+                
+                <div id="storageWarning" class="bg-yellow-100 dark:bg-yellow-900/30 border-l-4 border-yellow-500 dark:border-yellow-400 p-3 hidden">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-medium">Storage Warning</h3>
+                            <p class="text-sm">You're running low on storage space. Consider deleting some files.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 dark:border-gray-700">
+                    <button data-private-tab="files" class="tab-button px-6 py-3 font-medium border-b-2 border-primary-light dark:border-primary-dark text-primary-dark dark:text-primary-light transition-colors flex items-center gap-2">
+                        <i class="fas fa-file"></i>
+                        <span>Files</span>
+                    </button>
+                    <button data-private-tab="photos" class="tab-button px-6 py-3 font-medium border-b-2 border-transparent hover:text-primary-dark dark:hover:text-primary-light transition-colors flex items-center gap-2">
+                        <i class="fas fa-image"></i>
+                        <span>Photos</span>
+                    </button>
+                    <button data-private-tab="videos" class="tab-button px-6 py-3 font-medium border-b-2 border-transparent hover:text-primary-dark dark:hover:text-primary-light transition-colors flex items-center gap-2">
+                        <i class="fas fa-video"></i>
+                        <span>Videos</span>
+                    </button>
+                </div>
+                
+                <!-- Tab Contents -->
+                <div class="flex-1 overflow-y-auto">
+                    <!-- Files Tab -->
+                    <div id="filesTab" class="p-4 h-full">
+                        <div id="fileDropArea" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-6 transition-colors">
+                            <div class="max-w-md mx-auto">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-text-secondary-light dark:text-text-secondary-dark mb-3"></i>
+                                <h3 class="font-medium mb-1">Drag & drop files here</h3>
+                                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">or</p>
+                                <button onclick="document.getElementById('privateFileInput').click()" class="bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg px-4 py-2 font-medium transition-colors inline-flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>Browse Files</span>
+                                </button>
+                                <input type="file" id="privateFileInput" class="hidden" multiple>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-medium mb-3 flex items-center gap-2">
+                            <i class="fas fa-files"></i>
+                            <span>Your Files</span>
+                        </h3>
+                        
+                        <div id="fileList" class="space-y-2">
+                            <!-- Files will be listed here -->
+                            <div class="text-center py-8 text-text-secondary-light dark:text-text-secondary-dark">
+                                <i class="fas fa-folder-open text-4xl mb-3"></i>
+                                <p>No files stored yet</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Photos Tab -->
+                    <div id="photosTab" class="p-4 h-full hidden">
+                        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-6">
+                            <div class="max-w-md mx-auto">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-text-secondary-light dark:text-text-secondary-dark mb-3"></i>
+                                <h3 class="font-medium mb-1">Drag & drop photos here</h3>
+                                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">or</p>
+                                <button onclick="document.getElementById('privatePhotoInput').click()" class="bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg px-4 py-2 font-medium transition-colors inline-flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>Browse Photos</span>
+                                </button>
+                                <input type="file" id="privatePhotoInput" class="hidden" accept="image/*" multiple>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-medium mb-3 flex items-center gap-2">
+                            <i class="fas fa-images"></i>
+                            <span>Your Photos</span>
+                        </h3>
+                        
+                        <div id="photoList" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- Photos will be listed here -->
+                            <div class="col-span-full text-center py-8 text-text-secondary-light dark:text-text-secondary-dark">
+                                <i class="fas fa-image text-4xl mb-3"></i>
+                                <p>No photos stored yet</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Videos Tab -->
+                    <div id="videosTab" class="p-4 h-full hidden">
+                        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-6">
+                            <div class="max-w-md mx-auto">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-text-secondary-light dark:text-text-secondary-dark mb-3"></i>
+                                <h3 class="font-medium mb-1">Drag & drop videos here</h3>
+                                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-4">or</p>
+                                <button onclick="document.getElementById('privateVideoInput').click()" class="bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg px-4 py-2 font-medium transition-colors inline-flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>Browse Videos</span>
+                                </button>
+                                <input type="file" id="privateVideoInput" class="hidden" accept="video/*" multiple>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-medium mb-3 flex items-center gap-2">
+                            <i class="fas fa-film"></i>
+                            <span>Your Videos</span>
+                        </h3>
+                        
+                        <div id="videoList" class="space-y-3">
+                            <!-- Videos will be listed here -->
+                            <div class="text-center py-8 text-text-secondary-light dark:text-text-secondary-dark">
+                                <i class="fas fa-video text-4xl mb-3"></i>
+                                <p>No videos stored yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div id="filePreviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closePreviewModal()"></div>
+        
+        <div class="relative max-w-4xl w-full max-h-[90vh] animate-scale-in">
+            <button onclick="closePreviewModal()" class="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            
+            <div id="previewContent" class="bg-surface-light dark:bg-surface-dark rounded-lg overflow-hidden shadow-xl max-h-full flex flex-col">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h3 id="previewTitle" class="font-medium truncate"></h3>
+                    <button id="downloadPreviewBtn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                
+                <div class="flex-1 overflow-auto flex items-center justify-center p-4">
+                    <img id="imagePreview" class="max-w-full max-h-[70vh] object-contain hidden">
+                    <video id="videoPreview" controls class="max-w-full max-h-[70vh] hidden"></video>
+                    <div id="filePreviewInfo" class="hidden p-8 text-center">
+                        <i class="fas fa-file text-6xl text-text-secondary-light dark:text-text-secondary-dark mb-4"></i>
+                        <h4 id="fileName" class="font-medium mb-1"></h4>
+                        <p id="fileSize" class="text-sm text-text-secondary-light dark:text-text-secondary-dark"></p>
+                        <button id="downloadFileBtn" class="mt-4 bg-primary-light/20 text-primary-dark dark:bg-primary-dark/20 dark:text-primary-light hover:bg-primary-light/30 dark:hover:bg-primary-dark/30 rounded-lg px-4 py-2 font-medium transition-colors inline-flex items-center gap-2">
+                            <i class="fas fa-download"></i>
+                            <span>Download File</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="script.js"></script>
+</body>
+</html>
